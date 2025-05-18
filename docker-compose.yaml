@@ -1,0 +1,23 @@
+services:
+
+  wpmongo:
+    container_name: webprotege-mongodb
+    image: mongo:4.1-bionic
+    restart: unless-stopped
+    user: "1000:1000"
+    volumes: 
+      - ./.protegedata/mongodb:/data/db
+    command: ["mongod", "--wiredTigerCacheSizeGB", "1.5"]
+
+  webprotege:
+    container_name: webprotege
+    build: .
+    depends_on:
+      - wpmongo
+    restart: unless-stopped
+    environment:
+      - webprotege.mongodb.host=wpmongo
+    volumes: 
+    - ./.protegedata/protege:/srv/webprotege
+    ports:
+      - 5000:8080
