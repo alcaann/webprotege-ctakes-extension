@@ -4,10 +4,10 @@ services:
     container_name: webprotege-mongodb
     image: mongo:4.1-bionic
     restart: unless-stopped
-    # Remove the user constraint to run as root (default in container)
+    user: "1000:1000"
     volumes: 
       - ./.protegedata/mongodb:/data/db
-    command: ["mongod", "--wiredTigerCacheSizeGB", "1.5", "--bind_ip_all"]
+    command: ["mongod", "--wiredTigerCacheSizeGB", "1.5"]
 
   webprotege:
     container_name: webprotege
@@ -18,8 +18,6 @@ services:
     environment:
       - webprotege.mongodb.host=wpmongo
     volumes: 
-      - ./.protegedata/protege:/srv/webprotege
-      - ./:/webprotege
+    - ./.protegedata/protege:/srv/webprotege
     ports:
       - 5000:8080
-      - 8080:8080  # Additional port for development

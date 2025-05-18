@@ -1,0 +1,48 @@
+# WebProtégé Project Setup
+
+## Project Overview
+WebProtégé is a web-based collaborative ontology editor built using Java, GWT (Google Web Toolkit), and MongoDB. It's designed for creating, editing and managing OWL ontologies, supporting collaboration, access control, and change tracking.
+
+## Project Components
+- **webprotege-server**: The server-side application that runs in Tomcat
+- **webprotege-client**: The GWT-based client-side frontend
+- **webprotege-shared**: Shared code between client and server
+- **webprotege-server-core**: Core server functionality
+- **webprotege-shared-core**: Core shared functionality
+- **webprotege-cli**: Command-line utilities
+
+## Docker Setup
+The project uses Docker to provide a consistent development and production environment:
+
+1. **MongoDB Container (`wpmongo`)**:
+   - Provides the database backend
+   - Stores all project data, user accounts, and settings
+   - Configured with a dedicated volume for data persistence
+
+2. **WebProtégé Container (`webprotege`)**:
+   - Based on Maven and Tomcat
+   - Hosts the application code
+   - Development setup configured not to build automatically on startup
+   - Allows attaching VS Code's Dev Containers extension
+
+## Development Workflow
+1. Launch containers with `docker-compose up -d`
+2. Attach VS Code to the running webprotege container
+3. Manually run the build script when ready to compile and deploy
+4. Access the application via http://localhost:5000
+
+## Database Connection
+- MongoDB runs in a separate container
+- WebProtégé connects to it via the hostname `wpmongo`
+- Database configurations in `webprotege.properties` point to this hostname
+
+## Important Files
+- `Dockerfile`: Defines the WebProtégé container
+- `docker-compose.yaml`: Orchestrates both containers
+- `build.sh`: Script to manually build and deploy the application
+- `start-dev.sh`: Script that keeps the container running for development
+
+## Notes
+- The Maven project uses MongoDB drivers (morphia) for data persistence
+- WebProtégé requires MongoDB 4.1 or compatible version
+- For development, code changes can be made in the container and built on demand
