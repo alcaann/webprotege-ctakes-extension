@@ -8,15 +8,17 @@ services:
     volumes: 
       - ./.protegedata/mongodb:/data/db
     command: ["mongod", "--wiredTigerCacheSizeGB", "1.5", "--bind_ip_all"]
-
   webprotege:
     container_name: webprotege
-    build: .
+    build:
+      context: .
+      args:
+        - MONGODB_HOST=wpmongo
     depends_on:
       - wpmongo
     restart: unless-stopped
     environment:
-      - webprotege.mongodb.host=wpmongo
+      - WEBPROTEGE_MONGODB_HOST=wpmongo
     volumes: 
       - ./.protegedata/protege:/srv/webprotege
       - ./:/webprotege

@@ -1,0 +1,15 @@
+mvn -T 1C install -P dev -Dmaven.test.skip=true -DskipTests=true -pl webprotege-client -am
+
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for webprotege 4.0.2:
+[INFO] 
+[INFO] webprotege ......................................... SUCCESS [  2.182 s]
+[INFO] webprotege-shared-core ............................. SUCCESS [ 27.493 s]
+[INFO] webprotege-shared .................................. SUCCESS [06:06 min]
+[INFO] webprotege-client .................................. SUCCESS [16:18 min]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  22:55 min (Wall Clock)
+[INFO] Finished at: 2025-05-19T08:28:10Z
+[INFO] ------------------------------------------------------------------------

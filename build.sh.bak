@@ -1,0 +1,69 @@
+#!/bin/bash
+
+# Navigate to the webprotege directory
+cd /webprotege
+
+# Check if the build was successful
+if [ ! -f webprotege-server/target/webprotege-server-4.0.2.war ]; then
+    echo "Build failed: WAR file not created"
+    exit 1
+fi
+
+echo "Deploying to Tomcat..."
+# Clean and prepare deployment directory
+rm -rf /usr/share/tomcat9/webapps/ROOT/* 2>/dev/null
+mkdir -p /usr/share/tomcat9/webapps/ROOT
+
+# Extract the WAR file to ROOT directory
+cp webprotege-server/target/webprotege-server-4.0.2.war /usr/share/tomcat9/webapps/ROOT/webprotege.war
+cd /usr/share/tomcat9/webapps/ROOT
+unzip -o webprotege.war
+rm webprotege.war
+
+# Copy the CLI jar
+cp /webprotege/webprotege-cli/target/webprotege-cli-4.0.2.jar /webprotege-cli.jar 2>/dev/null
+
+# Configure Tomcat
+echo "Configuring Tomcat..."
+mkdir -p /usr/share/tomcat9/conf
+
+# Copy server.xml and web.xml from our prepared configs
+cp /webprotege/conf/server.xml /usr/share/tomcat9/conf/server.xml
+cp /webprotege/tomcat8_default_conf/web.xml /usr/share/tomcat9/conf/web.xml
+
+# Configure MongoDB and data directory
+echo "Configuring WebProtege application..."
+MONGO_HOST=${WEBPROTEGE_MONGODB_HOST:-wpmongo}
+DATA_DIR=${WEBPROTEGE_DATA_DIR:-/srv/webprotege}
+
+# Create and update properties file
+mkdir -p /usr/share/tomcat9/webapps/ROOT/WEB-INF/classes
+if [ ! -f /usr/share/tomcat9/webapps/ROOT/WEB-INF/classes/webprotege.properties ]; then
+    cp /webprotege/webprotege-server-core/src/main/resources/webprotege.properties /usr/share/tomcat9/webapps/ROOT/WEB-INF/classes/
+fi
+
+# Set MongoDB host and data directory in properties
+sed -i "s/mongodb.host=.*/mongodb.host=$MONGO_HOST/" /usr/share/tomcat9/webapps/ROOT/WEB-INF/classes/webprotege.properties
+mkdir -p $DATA_DIR
+chmod 777 $DATA_DIR
+sed -i "s|data.directory=.*|data.directory=$DATA_DIR|" /usr/share/tomcat9/webapps/ROOT/WEB-INF/classes/webprotege.properties
+
+# Check MongoDB connectivity
+echo "Checking MongoDB connectivity..."
+if ! command -v nc &>/dev/null; then
+    apt-get update -qq && apt-get install -y netcat > /dev/null 2>&1
+fi
+
+nc -z -w 5 $MONGO_HOST 27017
+if [ $? -ne 0 ]; then
+    echo "WARNING: Cannot connect to MongoDB at $MONGO_HOST:27017"
+    echo "Make sure MongoDB is running in the other container and network connectivity is configured correctly."
+else
+    echo "MongoDB is reachable at $MONGO_HOST:27017"
+fi
+
+echo "Starting Tomcat..."
+/usr/share/tomcat9/bin/catalina.sh run
+
+echo "WebProtege is now running!"
+echo "Access it at http://localhost:8080 or http://localhost:5000"
