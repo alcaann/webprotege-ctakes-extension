@@ -6,7 +6,9 @@ services:
     restart: unless-stopped
     # Remove the user constraint to run as root (default in container)
     volumes: 
-      - ./.protegedata/mongodb:/data/db
+      - mongodb_data:/data/db
+    #  - ./.protegedata/mongodb:/data/db #Problems with permissions in windows on container fresh startup
+
     command: ["mongod", "--wiredTigerCacheSizeGB", "1.5", "--bind_ip_all"]
   webprotege:
     container_name: webprotege
@@ -25,3 +27,5 @@ services:
     ports:
       - 5000:8080
       - 8080:8080  # Additional port for development
+volumes:
+  mongodb_data:
