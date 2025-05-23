@@ -27,7 +27,7 @@ cd /webprotege
 # Step 0: Build WebProtege
 echo "=== Building WebProtege ==="
 #mvn package -Dmaven.test.skip=true -DskipTests=true -Dgwt.draftCompile=true -Dgwt.localWorkers=8
-mvn -T 1C install -P dev -Dmaven.test.skip=true -DskipTests=true -pl webprotege-client -am
+#mvn -T 1C install -P dev -Dmaven.test.skip=true -DskipTests=true -pl webprotege-client -am
 
 
 # Step 1: Check if the build was successful

@@ -1,0 +1,5 @@
+mvn clean -U -Pdev -Dmaven.test.skip=true
+mvn install -U -Pdev -Dmaven.test.skip=true
+
+mvn gwt:codeserver -Dgwt.draftCompile=true -Dgwt.localWorkers=8
+

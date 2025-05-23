@@ -7,7 +7,6 @@ import edu.stanford.bmir.protege.web.server.change.FixedChangeListGenerator;
 import edu.stanford.bmir.protege.web.server.change.HasApplyChanges;
 import edu.stanford.bmir.protege.web.server.change.OntologyChange;
 import edu.stanford.bmir.protege.web.server.change.OwlOntologyChangeTranslator;
-import edu.stanford.bmir.protege.web.server.change.OwlOntologyChangeTranslatorVisitor;
 import edu.stanford.bmir.protege.web.server.dispatch.AbstractProjectActionHandler;
 import edu.stanford.bmir.protege.web.server.dispatch.ExecutionContext;
 import edu.stanford.bmir.protege.web.server.owlapi.WebProtegeOWLManager;
@@ -17,6 +16,7 @@ import edu.stanford.bmir.protege.web.shared.onc2ont.ProcessClinicalNotesAction;
 import edu.stanford.bmir.protege.web.shared.onc2ont.ProcessClinicalNotesResult;
 import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 import edu.stanford.bmir.protege.web.shared.user.UserId;
+import org.semanticweb.owlapi.formats.TurtleDocumentFormat;
 import org.semanticweb.owlapi.model.*;
 import org.semanticweb.owlapi.io.StreamDocumentSource;
 import org.semanticweb.owlapi.model.AddAxiom;
@@ -111,12 +111,17 @@ public class ProcessClinicalNotesActionHandler extends AbstractProjectActionHand
             // Parse the Turtle content into a temporary OWL ontology using a standalone manager
             // instead of the project's ontology manager which restricts ontology creation
             InputStream inputStream = new ByteArrayInputStream(ttlContent.getBytes(StandardCharsets.UTF_8));
-            StreamDocumentSource documentSource = new StreamDocumentSource(inputStream);
-            logger.info("[Onc2Ont] Loading ontology from Turtle content using standalone manager");
+            // Provide the TurtleDocumentFormat to the StreamDocumentSource
+            TurtleDocumentFormat turtleFormat = new TurtleDocumentFormat();
+            // Create a temporary IRI for the document source
+            IRI tempDocumentIri = IRI.create("http://webprotege.stanford.edu/generated-onc2ont/" + projectId.getId() + "/temp#" + System.currentTimeMillis());
+            StreamDocumentSource documentSource = new StreamDocumentSource(inputStream, tempDocumentIri, turtleFormat, "text/turtle");
+            logger.info("[Onc2Ont] Loading ontology from Turtle content using standalone manager with explicit Turtle format and temp IRI: {}", tempDocumentIri);
             
             // Create a standalone manager that isn't restricted
             OWLOntologyManager tempManager = WebProtegeOWLManager.createOWLOntologyManager();
-            OWLOntology importedOntology = tempManager.loadOntologyFromOntologyDocument(documentSource, new OWLOntologyLoaderConfiguration());
+            OWLOntologyLoaderConfiguration loaderConfig = new OWLOntologyLoaderConfiguration();
+            OWLOntology importedOntology = tempManager.loadOntologyFromOntologyDocument(documentSource, loaderConfig);
             logger.info("[Onc2Ont] Loaded ontology with {} axioms", importedOntology.getAxioms().size());
             
             
