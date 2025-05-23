@@ -13,3 +13,93 @@ mvn -T 1C install -P dev -Dmaven.test.skip=true -DskipTests=true -pl webprotege-
 [INFO] Total time:  22:55 min (Wall Clock)
 [INFO] Finished at: 2025-05-19T08:28:10Z
 [INFO] ------------------------------------------------------------------------
+
+
+after onc2ont changes:
+
+[INFO] webprotege ......................................... SUCCESS [  1.142 s]
+[INFO] webprotege-shared-core ............................. SUCCESS [  3.596 s]
+[INFO] webprotege-shared .................................. SUCCESS [ 26.157 s]
+[INFO] webprotege-server-core ............................. SUCCESS [05:41 min]
+[INFO] webprotege-client .................................. FAILURE [11:52 min]
+[INFO] webprotege-server .................................. SKIPPED
+[INFO] webprotege-cli ..................................... SKIPPED
+
+[INFO] webprotege ......................................... SUCCESS [  0.827 s]
+[INFO] webprotege-shared-core ............................. SUCCESS [  2.713 s]
+[INFO] webprotege-shared .................................. SUCCESS [ 29.980 s]
+[INFO] webprotege-server-core ............................. SUCCESS [01:02 min]
+[INFO] webprotege-client .................................. SUCCESS [16:13 min]
+[INFO] webprotege-server .................................. FAILURE [01:22 min]
+[INFO] webprotege-cli ..................................... SKIPPED
+
+[INFO] webprotege ......................................... SUCCESS [  0.860 s]
+[INFO] webprotege-shared-core ............................. SUCCESS [  2.796 s]
+[INFO] webprotege-shared .................................. SUCCESS [ 26.276 s]
+[INFO] webprotege-server-core ............................. SUCCESS [09:05 min]
+[INFO] webprotege-client .................................. SUCCESS [18:27 min]
+[INFO] webprotege-server .................................. FAILURE [01:01 min]
+[INFO] webprotege-cli ..................................... SKIPPED
+
+
+final good v0:
+
+[WARNING] jcl-over-slf4j-1.7.7.jar, commons-logging-1.2.jar define 6 overlapping classes: 
+[WARNING]   - org.apache.commons.logging.impl.SimpleLog$1
+[WARNING]   - org.apache.commons.logging.Log
+[WARNING]   - org.apache.commons.logging.impl.SimpleLog
+[WARNING]   - org.apache.commons.logging.LogConfigurationException
+[WARNING]   - org.apache.commons.logging.impl.NoOpLog
+[WARNING]   - org.apache.commons.logging.LogFactory
+[WARNING] maven-shade-plugin has detected that some class files are
+[WARNING] present in two or more JARs. When this happens, only one
+[WARNING] single version of the class is copied to the uber jar.
+[WARNING] Usually this is not harmful and you can skip these warnings,
+[WARNING] otherwise try to manually exclude artifacts based on
+[WARNING] mvn dependency:tree -Ddetail=true and the above output.
+[WARNING] See http://maven.apache.org/plugins/maven-shade-plugin/
+[INFO] Replacing original artifact with shaded artifact.
+[INFO] Replacing /webprotege/webprotege-cli/target/webprotege-cli-4.0.2.jar with /webprotege/webprotege-cli/target/webprotege-cli-4.0.2-shaded.jar
+[INFO] Dependency-reduced POM written at: /webprotege/webprotege-cli/dependency-reduced-pom.xml
+[INFO] 
+[INFO] --- install:3.1.1:install (default-install) @ webprotege-cli ---
+[INFO] Installing /webprotege/webprotege-cli/dependency-reduced-pom.xml to /root/.m2/repository/edu/stanford/protege/webprotege-cli/4.0.2/webprotege-cli-4.0.2.pom
+[INFO] Installing /webprotege/webprotege-cli/target/webprotege-cli-4.0.2.jar to /root/.m2/repository/edu/stanford/protege/webprotege-cli/4.0.2/webprotege-cli-4.0.2.jar
+[INFO] Saved Build to local file: /root/.m2/build-cache/v1.1/edu.stanford.protege/webprotege-cli/8f0e292e7c5e1c7adc543363108391c716a0749eae8143d5cde1adee56d37962/local/buildinfo.xml
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for webprotege 4.0.2:
+[INFO] 
+[INFO] webprotege ......................................... SUCCESS [  0.830 s]
+[INFO] webprotege-shared-core ............................. SUCCESS [  2.521 s]
+[INFO] webprotege-shared .................................. SUCCESS [ 28.490 s]
+[INFO] webprotege-server-core ............................. SUCCESS [04:05 min]
+[INFO] webprotege-client .................................. SUCCESS [10:47 min]
+[INFO] webprotege-server .................................. SUCCESS [01:10 min]
+[INFO] webprotege-cli ..................................... SUCCESS [ 22.898 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  16:59 min
+[INFO] Finished at: 2025-05-21T12:38:23Z
+[INFO] ------------------------------------------------------------------------
+
+
+mvn install after clean, no -T:
+
+[INFO] ------------------------------------------------------------------------
+[INFO] Reactor Summary for webprotege 4.0.2:
+[INFO] 
+[INFO] webprotege ......................................... SUCCESS [  1.845 s]
+[INFO] webprotege-shared-core ............................. SUCCESS [ 28.207 s]
+[INFO] webprotege-shared .................................. SUCCESS [06:47 min]
+[INFO] webprotege-server-core ............................. SUCCESS [06:56 min]
+[INFO] webprotege-client .................................. SUCCESS [17:04 min]
+[INFO] webprotege-server .................................. SUCCESS [01:57 min]
+[INFO] webprotege-cli ..................................... SUCCESS [ 17.294 s]
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  33:33 min
+[INFO] Finished at: 2025-05-22T07:56:49Z
+[INFO] ------------------------------------------------------------------------
+root@c08b9bd2ef4e:/webprotege# 

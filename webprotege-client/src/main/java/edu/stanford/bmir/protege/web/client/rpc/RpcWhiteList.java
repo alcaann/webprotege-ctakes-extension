@@ -32,6 +32,8 @@ import edu.stanford.bmir.protege.web.shared.shortform.DictionaryLanguageData;
 import edu.stanford.bmir.protege.web.shared.tag.Tag;
 import edu.stanford.bmir.protege.web.shared.viz.*;
 import edu.stanford.bmir.protege.web.shared.webhook.ProjectWebhookEventType;
+import edu.stanford.bmir.protege.web.shared.onc2ont.ProcessClinicalNotesAction;
+import edu.stanford.bmir.protege.web.shared.onc2ont.ProcessClinicalNotesResult;
 
 /**
  * Matthew Horridge
@@ -47,6 +49,10 @@ public class RpcWhiteList implements Action, Result {
     private Color color;
 
     private Criteria criteria;
+    
+    private ProcessClinicalNotesAction processClinicalNotesAction;
+    
+    private ProcessClinicalNotesResult processClinicalNotesResult;
 
     MultiMatchType multiMatchType;
 
@@ -409,13 +415,27 @@ public class RpcWhiteList implements Action, Result {
 
     public void setInstanceRetrievalMode(InstanceRetrievalMode instanceRetrievalMode) {
         this.instanceRetrievalMode = instanceRetrievalMode;
-    }
-
-    public Tag getTag() {
+    }    public Tag getTag() {
         return tag;
     }
 
     public void setTag(Tag tag) {
         this.tag = tag;
+    }
+    
+    public ProcessClinicalNotesAction getProcessClinicalNotesAction() {
+        return processClinicalNotesAction;
+    }
+    
+    public void setProcessClinicalNotesAction(ProcessClinicalNotesAction processClinicalNotesAction) {
+        this.processClinicalNotesAction = processClinicalNotesAction;
+    }
+    
+    public ProcessClinicalNotesResult getProcessClinicalNotesResult() {
+        return processClinicalNotesResult;
+    }
+    
+    public void setProcessClinicalNotesResult(ProcessClinicalNotesResult processClinicalNotesResult) {
+        this.processClinicalNotesResult = processClinicalNotesResult;
     }
 }

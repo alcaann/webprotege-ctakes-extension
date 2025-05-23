@@ -10,6 +10,7 @@ services:
     #  - ./.protegedata/mongodb:/data/db #Problems with permissions in windows on container fresh startup
 
     command: ["mongod", "--wiredTigerCacheSizeGB", "1.5", "--bind_ip_all"]
+
   webprotege:
     container_name: webprotege
     build:
@@ -20,12 +21,21 @@ services:
       - wpmongo
     restart: unless-stopped
     environment:
-      - WEBPROTEGE_MONGODB_HOST=wpmongo
-    volumes: 
-      - ./.protegedata/protege:/srv/webprotege
+      - WEBPROTEGE_MONGODB_HOST=wpmongo    
+    volumes:
+      - webprotege_data:/srv/webprotege
       - ./:/webprotege
     ports:
-      - 5000:8080
-      - 8080:8080  # Additional port for development
+      - 8080:8080  # Main port for development  
+
+  onc2ont:
+    container_name: onc2ont
+    image: onc2ont  # Using pre-built image from Docker Desktop
+    restart: unless-stopped
+    environment:
+      - UMLS_APIKEY=d8b52583-9206-4422-b892-6551647e6b28
+    ports:
+      - 5000:5000  # Expose API port to the host
 volumes:
   mongodb_data:
+  webprotege_data:

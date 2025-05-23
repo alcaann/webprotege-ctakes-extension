@@ -36,7 +36,7 @@ public class HelloWorldPortletPresenter extends AbstractWebProtegePortletPresent
         // Create a simple HTML widget with a hello world message
         HTML widget = new HTML("<div style='padding: 20px; text-align: center;'>" +
                                 "<h3>Hello WebProtege!</h3>" +
-                                "<p>This is a custom portlet example.</p>" +
+                                "<p>This is a custom portlet example. PACO</p>" +
                                 "</div>");
         
         // Set the portlet content to our widget

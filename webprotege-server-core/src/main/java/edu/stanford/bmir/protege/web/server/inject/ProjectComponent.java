@@ -20,7 +20,8 @@ import edu.stanford.bmir.protege.web.shared.project.ProjectId;
 @Subcomponent(
         modules = {
                 ProjectModule.class,
-                OntologyStoreModule.class
+                OntologyStoreModule.class,
+                edu.stanford.bmir.protege.web.server.onc2ont.Onc2OntModule.class
         }
 )
 @ProjectSingleton

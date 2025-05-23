@@ -1,0 +1,112 @@
+@base   <http://onc2ont.com/ontology/> .
+@prefix inst: <http://onc2ont.com/ontology/instance/> .
+@prefix onc:  <http://onc2ont.com/ontology/schema#> .
+@prefix owl:  <http://www.w3.org/2002/07/owl#> .
+@prefix rdf:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+onc:hasPolarity  rdf:type  owl:DatatypeProperty;
+        rdfs:domain  onc:IdentifiedAnnotation;
+        rdfs:label   "has polarity"@en;
+        rdfs:range   xsd:integer .
+
+onc:DiseaseDisorderMention
+        rdf:type         owl:Class;
+        rdfs:label       "Disease or Disorder Mention"@en;
+        rdfs:subClassOf  onc:IdentifiedAnnotation .
+
+onc:AnatomicalSiteMention
+        rdf:type         owl:Class;
+        rdfs:label       "Anatomical Site Mention"@en;
+        rdfs:subClassOf  onc:IdentifiedAnnotation .
+
+inst:doc_api_input.txt
+        rdf:type    onc:SourceDocument;
+        rdfs:label  "Source Document: api_input.txt"@en .
+
+inst:ddm_cancer_19  rdf:type  onc:DiseaseDisorderMention;
+        rdfs:label            "cancer (ddm)"@en;
+        onc:hasBeginOffset    "19"^^xsd:int;
+        onc:hasCUI            "363346000";
+        onc:hasCoveredText    "cancer";
+        onc:hasEndOffset      "25"^^xsd:int;
+        onc:hasPolarity       "0"^^xsd:int;
+        onc:occursInDocument  inst:doc_api_input.txt .
+
+onc:degreeOf  rdf:type  owl:ObjectProperty;
+        rdfs:label  "degree of"@en .
+
+inst:asm_lung_14  rdf:type    onc:AnatomicalSiteMention;
+        rdfs:label            "lung (asm)"@en;
+        onc:hasBeginOffset    "14"^^xsd:int;
+        onc:hasCUI            "39607008";
+        onc:hasCoveredText    "lung";
+        onc:hasEndOffset      "18"^^xsd:int;
+        onc:hasPolarity       "0"^^xsd:int;
+        onc:occursInDocument  inst:doc_api_input.txt .
+
+onc:SourceDocument  rdf:type  owl:Class;
+        rdfs:label       "Source Clinical Document"@en;
+        rdfs:subClassOf  owl:NamedIndividual .
+
+onc:MedicationMention
+        rdf:type         owl:Class;
+        rdfs:label       "Medication Mention"@en;
+        rdfs:subClassOf  onc:IdentifiedAnnotation .
+
+onc:hasCUI  rdf:type  owl:DatatypeProperty;
+        rdfs:domain  onc:IdentifiedAnnotation;
+        rdfs:label   "has CUI"@en;
+        rdfs:range   xsd:string .
+
+onc:locationOf  rdf:type  owl:ObjectProperty;
+        rdfs:label  "location of"@en .
+
+onc:SignSymptomMention
+        rdf:type         owl:Class;
+        rdfs:label       "Sign or Symptom Mention"@en;
+        rdfs:subClassOf  onc:IdentifiedAnnotation .
+
+onc:IdentifiedAnnotation
+        rdf:type         owl:Class;
+        rdfs:label       "Identified Annotation"@en;
+        rdfs:subClassOf  owl:NamedIndividual .
+
+onc:hasBeginOffset  rdf:type  owl:DatatypeProperty;
+        rdfs:domain  onc:IdentifiedAnnotation;
+        rdfs:label   "has begin offset"@en;
+        rdfs:range   xsd:integer .
+
+onc:hasModifier  rdf:type  owl:ObjectProperty;
+        rdfs:label  "has modifier"@en .
+
+onc:occursInDocument  rdf:type  owl:ObjectProperty;
+        rdfs:domain  onc:IdentifiedAnnotation;
+        rdfs:label   "occurs in document"@en;
+        rdfs:range   onc:SourceDocument .
+
+onc:hasEndOffset  rdf:type  owl:DatatypeProperty;
+        rdfs:domain  onc:IdentifiedAnnotation;
+        rdfs:label   "has end offset"@en;
+        rdfs:range   xsd:integer .
+
+onc:ProcedureMention  rdf:type  owl:Class;
+        rdfs:label       "Procedure Mention"@en;
+        rdfs:subClassOf  onc:IdentifiedAnnotation .
+
+onc:hasCoveredText  rdf:type  owl:DatatypeProperty;
+        rdfs:domain  onc:IdentifiedAnnotation;
+        rdfs:label   "has covered text"@en;
+        rdfs:range   xsd:string .
+
+inst:ddm_lung_cancer_14
+        rdf:type              onc:DiseaseDisorderMention;
+        rdfs:label            "lung cancer (ddm)"@en;
+        onc:hasBeginOffset    "14"^^xsd:int;
+        onc:hasCUI            "363358000";
+        onc:hasCoveredText    "lung cancer";
+        onc:hasEndOffset      "25"^^xsd:int;
+        onc:hasPolarity       "0"^^xsd:int;
+        onc:locationOf        inst:asm_lung_14;
+        onc:occursInDocument  inst:doc_api_input.txt .

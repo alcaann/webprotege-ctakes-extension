@@ -613,4 +613,10 @@ public class ProjectActionHandlersModule {
     public ProjectActionHandler provideSetEntityGraphActiveFiltersActionHandler(SetEntityGraphActiveFiltersActionHandler handler) {
         return handler;
     }
+    
+    @Provides @IntoSet
+    public ProjectActionHandler provideProcessClinicalNotesActionHandler(
+            edu.stanford.bmir.protege.web.server.onc2ont.ProcessClinicalNotesActionHandler handler) {
+        return handler;
+    }
 }
