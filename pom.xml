@@ -18,6 +18,8 @@
         <autovalue.version>1.6.3rc1</autovalue.version>
         <jackson.version>2.9.7</jackson.version>
         <!-- WebProtege Specific Properties -->
+        <mongodb.host>wpmongo</mongodb.host>
+        <data.directory>/srv/webprotege</data.directory>
         <mail.smtp.host/>
         <mail.smtp.auth/>
         <mail.smtp.port/>

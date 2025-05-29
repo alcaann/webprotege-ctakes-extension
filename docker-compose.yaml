@@ -1,0 +1,44 @@
+services:
+
+  wpmongo:
+    container_name: webprotege-mongodb
+    image: mongo:4.1-bionic
+    restart: unless-stopped
+    # Remove the user constraint to run as root (default in container)
+    volumes: 
+      - mongodb_data:/data/db
+    #  - ./.protegedata/mongodb:/data/db #Problems with permissions in windows on container fresh startup
+
+    command: ["mongod", "--wiredTigerCacheSizeGB", "1.5", "--bind_ip_all"]
+
+  webprotege:
+    container_name: webprotege
+    build:
+      context: .
+      args:
+        - MONGODB_HOST=wpmongo
+    depends_on:
+      - wpmongo
+    restart: unless-stopped
+    environment:
+      - WEBPROTEGE_MONGODB_HOST=wpmongo    
+    volumes:
+      - webprotege_data:/srv/webprotege
+      - ./:/webprotege
+      - maven_cache:/root/.m2  # Cache Maven dependencies
+    ports:
+      - 8080:8080  # Main port for development  
+
+  onc2ont:
+    container_name: onc2ont
+    image: onc2ont  # Using pre-built image from Docker Desktop
+    restart: unless-stopped
+    environment:
+      - UMLS_APIKEY=d8b52583-9206-4422-b892-6551647e6b28
+    ports:
+      - 5000:5000  # Expose API port to the host
+
+volumes:
+  mongodb_data:
+  webprotege_data:
+  maven_cache:  # Named volume for Maven repository cache

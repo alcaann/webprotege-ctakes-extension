@@ -1,25 +1,26 @@
-FROM maven:3.6.0-jdk-11-slim AS build
+FROM maven:3.9.6-eclipse-temurin-11
 
-RUN apt-get update && \
-    apt-get install -y git mongodb
+# Install development tools
+RUN apt-get update \
+    && apt-get install -y git tomcat9 unzip curl \
+    && rm -rf /var/lib/apt/lists/*
 
-COPY . /webprotege
+# Set up Tomcat directories
+RUN rm -rf /usr/share/tomcat9/webapps/* \
+    && mkdir -p /srv/webprotege \
+    && mkdir -p /usr/share/tomcat9/webapps/ROOT
 
+# Set up development workspace
 WORKDIR /webprotege
 
-RUN mkdir -p /data/db \
-    && mongod --fork --syslog \
-    && mvn clean package
+# Copy source code to container
+COPY . /webprotege
 
-FROM tomcat:8-jre11-slim
+# Create start script for development
+COPY start-dev.sh /webprotege/start-dev.sh
 
-RUN rm -rf /usr/local/tomcat/webapps/* \
-    && mkdir -p /srv/webprotege \
-    && mkdir -p /usr/local/tomcat/webapps/ROOT
+# Make the script executable
+RUN chmod +x /webprotege/start-dev.sh
 
-WORKDIR /usr/local/tomcat/webapps/ROOT
-
-COPY --from=build /webprotege/webprotege-cli/target/webprotege-cli-4.0.0-beta-3-SNAPSHOT.jar /webprotege-cli.jar
-COPY --from=build /webprotege/webprotege-server/target/webprotege-server-4.0.0-beta-3-SNAPSHOT.war ./webprotege.war
-RUN unzip webprotege.war \
-    && rm webprotege.war
+# Entry point to keep the container running
+CMD ["/webprotege/start-dev.sh"]
