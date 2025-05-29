@@ -57,9 +57,6 @@ import edu.stanford.bmir.protege.web.server.watches.AddWatchActionHandler;
 import edu.stanford.bmir.protege.web.server.watches.GetWatchesActionHandler;
 import edu.stanford.bmir.protege.web.server.watches.RemoveWatchActionHandler;
 import edu.stanford.bmir.protege.web.server.watches.SetEntityWatchesActionHandler;
-import edu.stanford.bmir.protege.web.shared.crud.GetEntityCrudKitsAction;
-import edu.stanford.bmir.protege.web.shared.crud.GetEntityCrudKitsResult;
-import edu.stanford.bmir.protege.web.shared.dispatch.ProjectAction;
 import edu.stanford.bmir.protege.web.shared.issues.DeleteEntityCommentAction;
 import edu.stanford.bmir.protege.web.shared.issues.DeleteEntityCommentResult;
 
@@ -611,6 +608,12 @@ public class ProjectActionHandlersModule {
 
     @Provides @IntoSet
     public ProjectActionHandler provideSetEntityGraphActiveFiltersActionHandler(SetEntityGraphActiveFiltersActionHandler handler) {
+        return handler;
+    }
+    
+    @Provides @IntoSet
+    public ProjectActionHandler provideProcessClinicalNotesActionHandler(
+            edu.stanford.bmir.protege.web.server.onc2ont.ProcessClinicalNotesActionHandler handler) {
         return handler;
     }
 }

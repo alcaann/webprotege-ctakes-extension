@@ -1,7 +1,29 @@
+Changes from original tag v4.0.2:
+
+Files differ: .gitignore
+Files differ: Dockerfile
+Files differ: pom.xml
 Files differ: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/rpc/RpcWhiteList.java
+Files differ: webprotege-client/src/main/module-dev.gwt.xml
+Files differ: webprotege-client/src/main/module.gwt.xml
 Files differ: webprotege-server-core/src/main/java/edu/stanford/bmir/protege/web/server/inject/ProjectActionHandlersModule.java
 Files differ: webprotege-server-core/src/main/java/edu/stanford/bmir/protege/web/server/inject/ProjectComponent.java
-Only in ./../../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/custom/HelloWorldPortletPresenter.java
+Files differ: webprotege-server-core/src/main/resources/webprotege.properties
+Only in ./../../webprotege-ctakes-extension: admin-account-setup.sh
+Only in ./../../webprotege-ctakes-extension: conf/server.xml
+Only in ./../../webprotege-ctakes-extension: docker-compose.yaml
+Only in ./../../webprotege-ctakes-extension: install.sh
+Only in ./../../webprotege-ctakes-extension: start-dev.sh
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/catalina.policy
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/catalina.properties
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/context.xml
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/jaspic-providers.xml
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/jaspic-providers.xsd
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/logging.properties
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/server.xml
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/tomcat-users.xml
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/tomcat-users.xsd
+Only in ./../../webprotege-ctakes-extension: tomcat8_default_conf/web.xml
 Only in ./../../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/onc2ont/Onc2OntClientModule.java
 Only in ./../../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/onc2ont/Onc2OntPortletPresenter.java
 Only in ./../../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/onc2ont/Onc2OntView.java
