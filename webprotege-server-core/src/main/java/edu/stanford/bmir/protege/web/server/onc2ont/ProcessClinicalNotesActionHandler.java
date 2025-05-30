@@ -67,16 +67,19 @@ public class ProcessClinicalNotesActionHandler extends AbstractProjectActionHand
     @Nonnull
     @Override
     public ProcessClinicalNotesResult execute(@Nonnull ProcessClinicalNotesAction action, @Nonnull ExecutionContext executionContext) {
+        long startTime = System.currentTimeMillis();
+        int inputCharacters = action.getClinicalNotes().length();
+        
         try {
             logger.info("[Onc2Ont] Processing clinical notes for project: {}, user: {}", 
                        projectId.getId(), executionContext.getUserId().getUserName());
             
             // Call the onc2ont service API
             logger.info("[Onc2Ont] Sending {} characters of clinical notes to onc2ont service", 
-                       action.getClinicalNotes().length());
+                       inputCharacters);
             String ttlContent = sendToOnc2Ont(action.getClinicalNotes());
-            logger.info("[Onc2Ont] Received {} bytes of Turtle content from service", 
-                       ttlContent.getBytes(StandardCharsets.UTF_8).length);
+            int responseBytes = ttlContent.getBytes(StandardCharsets.UTF_8).length;
+            logger.info("[Onc2Ont] Received {} bytes of Turtle content from service", responseBytes);
             
             // Parse the Turtle content using WebProtege OWL API
             logger.info("[Onc2Ont] Parsing Turtle content using local OWL API parser");
@@ -84,7 +87,9 @@ public class ProcessClinicalNotesActionHandler extends AbstractProjectActionHand
             
             if (parsingResult.axioms.isEmpty()) {
                 logger.error("[Onc2Ont] No axioms found in Turtle content from service");
-                return ProcessClinicalNotesResult.error("No axioms found in service response");
+                long processingTime = System.currentTimeMillis() - startTime;
+                return ProcessClinicalNotesResult.error("No axioms found in service response", 
+                                                       processingTime, inputCharacters);
             }
             
             logger.info("[Onc2Ont] Successfully parsed {} axioms and {} ontology annotations from Turtle content", 
@@ -119,19 +124,33 @@ public class ProcessClinicalNotesActionHandler extends AbstractProjectActionHand
                        parsingResult.annotations.size());
             var result = changeManager.applyChanges(executionContext.getUserId(), changeListGenerator);
             
-            logger.info("[Onc2Ont] Successfully applied {} changes", result.getChangeList().size());
+            long processingTime = System.currentTimeMillis() - startTime;
+            logger.info("[Onc2Ont] Successfully applied {} changes in {} ms", 
+                       result.getChangeList().size(), processingTime);
             
-            return ProcessClinicalNotesResult.success();
+            return ProcessClinicalNotesResult.success(
+                parsingResult.axioms.size(),
+                parsingResult.annotations.size(),
+                processingTime,
+                inputCharacters,
+                responseBytes
+            );
             
         } catch (IOException e) {
             logger.error("[Onc2Ont] Failed to communicate with onc2ont service", e);
-            return ProcessClinicalNotesResult.error("Failed to communicate with onc2ont service: " + e.getMessage());
+            long processingTime = System.currentTimeMillis() - startTime;
+            return ProcessClinicalNotesResult.error("Failed to communicate with onc2ont service: " + e.getMessage(),
+                                                   processingTime, inputCharacters);
         } catch (OWLOntologyCreationException e) {
             logger.error("[Onc2Ont] Failed to parse Turtle content from service", e);
-            return ProcessClinicalNotesResult.error("Failed to parse axioms from service response: " + e.getMessage());
+            long processingTime = System.currentTimeMillis() - startTime;
+            return ProcessClinicalNotesResult.error("Failed to parse axioms from service response: " + e.getMessage(),
+                                                   processingTime, inputCharacters);
         } catch (Exception e) {
             logger.error("[Onc2Ont] Unexpected error during clinical notes processing", e);
-            return ProcessClinicalNotesResult.error("An error occurred: " + e.getMessage());
+            long processingTime = System.currentTimeMillis() - startTime;
+            return ProcessClinicalNotesResult.error("An error occurred: " + e.getMessage(),
+                                                   processingTime, inputCharacters);
         }
     }
 

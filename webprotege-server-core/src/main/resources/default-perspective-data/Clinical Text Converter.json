@@ -1,0 +1,23 @@
+{
+  "direction": "ROW",
+  "children": [
+    {
+      "weight": 0.3,
+      "node": {
+        "portlet": "portlets.IndividualsList"
+      }
+    },
+    {
+      "weight": 0.4,
+      "node": {
+        "portlet": "portlets.IndividualEditor"
+      }
+    },
+    {
+      "weight": 0.3,
+      "node": {
+        "portlet": "portlets.Onc2Ont"
+      }
+    }
+  ]
+}

@@ -52,7 +52,10 @@ public class Onc2OntPortletPresenter extends AbstractWebProtegePortletPresenter 
     private void handleSubmitClinicalNotes(String clinicalNotes) {
         // Add some client-side console logging
         GWT.log("[Onc2Ont] Submitting " + clinicalNotes.length() + " characters of clinical notes");
-        view.setStatusMessage("Processing clinical notes... (Sending to onc2ont service)");
+        
+        // Set initial progress
+        view.setProcessingStatus(Onc2OntView.ProcessingStatus.PROCESSING);
+        view.setStatusMessage("Connecting to onc2ont service...");
         
         long startTime = System.currentTimeMillis();
         dispatchServiceManager.execute(new ProcessClinicalNotesAction(getProjectId(), clinicalNotes),
@@ -60,13 +63,38 @@ public class Onc2OntPortletPresenter extends AbstractWebProtegePortletPresenter 
                     long processingTime = System.currentTimeMillis() - startTime;
                     if (result.isSuccess()) {
                         GWT.log("[Onc2Ont] Notes processed successfully in " + processingTime + "ms");
-                        view.setStatusMessage("Clinical notes were successfully processed and added to the ontology. " +
-                                              "Processing time: " + (processingTime / 1000.0) + " seconds. " + 
-                                              "You may need to refresh or navigate to see the new entities.");
+                        
+                        // Update to completed status
+                        view.setProcessingStatus(Onc2OntView.ProcessingStatus.COMPLETED);
+                        
+                        // Show detailed success message
+                        double processingTimeSec = result.getProcessingTimeMs() / 1000.0;
+                        String successMessage = "Clinical notes successfully processed! Added " + 
+                            result.getTotalEntitiesAdded() + " entities (" + 
+                            result.getAxiomsAdded() + " axioms + " + 
+                            result.getAnnotationsAdded() + " annotations) " +
+                            "to the ontology in " + (Math.round(processingTimeSec * 100.0) / 100.0) + 
+                            " seconds. You may need to refresh to see the new entities.";
+                        view.setStatusMessage(successMessage);
+                        
+                        // Show detailed statistics
+                        view.showProcessingStats(
+                            result.getAxiomsAdded(),
+                            result.getAnnotationsAdded(),
+                            result.getProcessingTimeMs(),
+                            result.getInputCharacters(),
+                            result.getResponseBytes()
+                        );
                     } else {
                         GWT.log("[Onc2Ont] Error processing notes: " + result.getErrorMessage());
-                        view.setStatusMessage("Error: " + result.getErrorMessage() + 
-                                             " (Processing attempted for " + (processingTime / 1000.0) + " seconds)");
+                        
+                        // Update to error status
+                        view.setProcessingStatus(Onc2OntView.ProcessingStatus.ERROR);
+                        
+                        String errorMessage = "Error: " + result.getErrorMessage() + 
+                            " (Processing attempted for " + (Math.round((result.getProcessingTimeMs() / 1000.0) * 100.0) / 100.0) + 
+                            " seconds with " + result.getInputCharacters() + " characters of input)";
+                        view.setStatusMessage(errorMessage);
                     }
                 });
     }

@@ -32,7 +32,7 @@ public class PerspectiveDataCopier {
         this.defaultPerspectiveDataDirectory = defaultPerspectiveDataDirectory;
     }
 
-    public void copyDefaultPerspectiveData() {
+    public void copyDefaultPerspectiveData() {        
         try {
             defaultPerspectiveDataDirectory.mkdirs();
             copyPerspectiveFile("perspective.list.json");
@@ -45,6 +45,7 @@ public class PerspectiveDataCopier {
             copyPerspectiveFile("Query.json");
             copyPerspectiveFile("OWL Classes.json");
             copyPerspectiveFile("OWL Properties.json");
+            copyPerspectiveFile("Clinical Text Converter.json");
 
 //            URL url = getClass().getResource(DEFAULT_PERSPECTIVE_DATA_RESOURCE_PATH);
 //            File templateDefaultPerspectiveDataDirectory = new File(url.toURI());

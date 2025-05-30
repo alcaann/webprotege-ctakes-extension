@@ -24,6 +24,21 @@
             color: #666;
             margin-top: 5px;
         }
+        .progressLabel {
+            font-weight: bold;
+            margin-bottom: 5px;
+            padding: 5px;
+            border-radius: 3px;
+            background-color: #f0f0f0;
+        }
+        .progress-error {
+            background-color: #ffebee !important;
+            color: #c62828;
+        }
+        .progress-success {
+            background-color: #e8f5e8 !important;
+            color: #2e7d32;
+        }
         .title {
             font-weight: bold;
             margin-bottom: 5px;
@@ -32,12 +47,50 @@
             margin-bottom: 10px;
             color: #666;
         }
+        .statsPanel {
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            background-color: #fafafa;
+        }
+        .statsPanel .stats-container h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        .statsPanel .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .statsPanel .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 8px;
+            background-color: white;
+            border-radius: 3px;
+            border: 1px solid #eee;
+        }
+        .statsPanel .stat-item.highlight {
+            background-color: #e3f2fd;
+            border-color: #2196f3;
+            font-weight: bold;
+        }
+        .statsPanel .stat-label {
+            color: #666;
+        }
+        .statsPanel .stat-value {
+            font-weight: bold;
+            color: #333;
+        }
     </ui:style>
     <g:HTMLPanel addStyleNames="{style.main}">
         <g:Label addStyleNames="{style.title}">Clinical Notes to Ontology Converter</g:Label>
         <g:Label addStyleNames="{style.instructions}">Enter clinical notes below and click "Convert" to generate an ontology from the text.</g:Label>
         <g:TextArea ui:field="notesArea" addStyleNames="{style.notesArea}"></g:TextArea>
         <g:Button ui:field="submitButton" text="Convert" addStyleNames="{style.submitButton}"></g:Button>
+        <g:Label ui:field="progressLabel" addStyleNames="{style.progressLabel}"></g:Label>
         <g:Label ui:field="statusLabel" addStyleNames="{style.statusLabel}"></g:Label>
+        <g:HTMLPanel ui:field="statsPanel" addStyleNames="{style.statsPanel}"></g:HTMLPanel>
     </g:HTMLPanel>
 </ui:UiBinder>
