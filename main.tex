@@ -1,0 +1,295 @@
+% LaTeX-Template/Final-Degree-Project-Report.tex
+
+
+\documentclass[12pt, a4paper]{article}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{setspace}
+\usepackage{svg}
+
+
+
+\onehalfspacing
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+
+% UMU and Faculty Logos (requires logo-umu.png and logo-fac.png files)
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/logo-umu.png} % Ensure you have this image
+\end{minipage}
+\hfill
+\begin{minipage}{0.4\textwidth}
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/logo-fac.png} % Ensure you have this image
+\end{minipage}
+
+\vfill % Space to vertically center the title
+
+{\Huge \textbf{
+BIOMEDICAL KNOWLEDGE REPRESENTATION MODEL DESIGN, IMPLEMENTATION AND INTEGRATION INTO A SEMANTIC FRAMEWORK}\\}
+\vspace{1.5cm}
+
+{\large \textbf{Author:} Juan Gallego Soler\\}
+\vspace{0.5cm}
+{\large \textbf{Supervisor:} Rodrigo Martínez Béjar\\}
+\vspace{2cm}
+
+{\large \textbf{Submission Date:} June 2025\\}
+\vspace{1cm}
+
+{\large \textbf{Degree in Computer Engineering}\\}
+\vspace{0.5cm}
+{\large \textbf{Academic Year 2024/2025}\\}
+
+\vfill % Space to better center everything
+
+\end{titlepage}
+
+\newpage
+% Company Authorization (if applicable)
+\section*{Authorization}
+% [Authorization text according to Annex V. \href{https://www.um.es/web/informatica/conoce-la-facultad/normativa}{Regulations. Regarding Final Degree Projects and Final Master's Projects}]
+% **Content:** Official authorization text if required by your university or any collaborating company.
+
+\newpage
+% Abstract and Extended Abstract
+\section*{Abstract}
+% **Content:** A concise summary of the entire thesis (approx. 250-300 words). It should cover the problem, the proposed solution (onc2ont pipeline and WebProtégé extension), key methods, main results, and principal conclusions. This is often written last.
+
+\section*{Extended Abstract}
+% **Content:** A more detailed summary (minimum 2000 words, as per your template). This should elaborate on the abstract, providing more context on the motivation, a deeper overview of the objectives, a summary of the methodology (cTAKES, OWL, WebProtégé GWT extension), a highlight of the most significant results from both the pipeline and the extension, and a more comprehensive statement of conclusions and potential future work.
+
+\newpage
+% Automatic Table of Contents
+\tableofcontents
+
+\newpage
+% Main document body
+\section{Introduction}
+% DONEv0.1 (pending revision)
+% **Content:**
+%   - **Context:** Introduce the challenge of unstructured data in clinical narratives and its impact on biomedical research and healthcare.
+%   - **Motivation:** Explain the need for automated methods to convert this text into structured, machine-understandable knowledge.
+%   - **Problem Statement:** Clearly define the problem your thesis addresses – bridging the gap between clinical text and formal ontologies.
+%   - **Proposed Solution:** Briefly introduce your two-part solution: the text analysis pipeline for semantic processing and the ontology editor extension for user interaction and integration.
+%   - **Thesis Scope and Objectives:** Outline the main goals (e.g., design, implement, integrate, evaluate).
+%   - **Document Structure:** Briefly describe what each subsequent chapter will cover.
+The field of oncology is increasingly data driven and has the potential to revolutionize patient care through personalized medicine and large-scale research. A significant portion of the most valuable clinical information, however, is recorded as unstructured text in documents such as clinical notes, pathology reports, and discharge summaries. This narrative data contains critical details about a patient's diagnosis, symptoms, treatment responses, and comorbidities, but its unstructured format makes it largely inaccessible to automated analysis. This limitation represents a major bottleneck that hinders the systematic use of this wealth of knowledge to advance cancer research and improve clinical decision-making.
+
+To overcome this challenge, it is essential to develop automated methods that can bridge the gap between unstructured clinical text and structured, machine-readable knowledge representations. The Semantic Web, with technologies like the Web Ontology Language (OWL), provides a powerful framework for creating rich, formal models of knowledge. By transforming clinical narratives into ontological format, we can enable sophisticated querying, logical reasoning, and seamless data integration, thereby unlocking the full potential of clinical data.
+
+This thesis addresses this challenge by presenting the design, implementation, and integration of a complete biomedical knowledge representation framework. The proposed solution is a two-part system designed to process clinical text from the oncological domain and integrate the extracted knowledge into a formal ontology. The first component is a robust backend pipeline that uses the Apache cTAKES (Clinical Text Analysis and Knowledge Extraction System) for in-depth Natural Language Processing. This pipeline is engineered to identify key medical concepts, analyze their assertion status (e.g., negated, historical), and extract meaningful relationships between them.
+
+The second component is a novel frontend extension for WebProtégé, a collaborative web-based ontology editor. This extension provides a "Clinical Text Converter" perspective directly within the ontology engineering environment, allowing users to process unstructured notes and have the resulting structured knowledge automatically integrated into their active ontology project. The system's output is formalized in OWL and serialized as Turtle (TTL). Crucially, all identified clinical concepts are mapped to standard terminologies, including SNOMED CT and the NCI Thesaurus (NCIt), through their corresponding identifiers in the Unified Medical Language System (UMLS). To ensure patient privacy, the system models is designed and evaluated using synthetic, non-private oncological data.
+
+This document details the entire lifecycle of this project. Chapter 2 provides a review of the state of the art in clinical NLP and semantic web technologies. Chapter 3 outlines the specific objectives and methodology of the project. Chapters 4 and 5 describe the technical architecture and implementation of the backend processing pipeline and the frontend WebProtégé extension, respectively. Chapter 6 presents the testing protocols, evaluation, and results, including performance analysis and a detailed use-case scenario. Finally, Chapter 7 concludes the thesis with a summary of contributions, a discussion of limitations, and a roadmap for future work.
+
+\section{State of the Art}
+% **Content:**
+%   - **Clinical Natural Language Processing (NLP):** Review existing NLP systems for clinical text (e.g., Apache cTAKES, MetaMap, CLAMP). Discuss their capabilities, common techniques (e.g., NER, relation extraction, assertion status detection), and limitations.
+%   - **Semantic Web Technologies in Biomedicine:** Discuss the role of ontologies (OWL, RDF), standard medical terminologies (e.g., UMLS, SNOMED CT), and their application in representing and reasoning with biomedical knowledge.
+%   - **Ontology Engineering Environments:** Briefly describe Protégé and WebProtégé as leading tools for ontology development and management.
+%   - **Integration of NLP and Semantic Web:** Review existing approaches or systems that aim to connect NLP outputs with ontologies or semantic frameworks. Highlight gaps or areas for improvement that your work addresses.
+
+\section{Objectives and Methodology}
+% **Content:**
+%   \subsection{Specific Objectives}
+%       % - Design and implement a pipeline for processing clinical text using a chosen NLP framework (e.g., Apache cTAKES), including advanced relation extraction and assertion detection.
+%       % - Develop a semantic conversion module to transform NLP annotations into a structured ontological format (e.g., OWL/TTL), defining a clear ontology model.
+%       % - Containerize the processing pipeline (e.g., using Docker) for ease of deployment and scalability.
+%       % - Design and implement an extension for an ontology editor (e.g., WebProtégé) to serve as a user interface for the text processing service.
+%       % - Enable seamless integration of the generated ontological output into an active ontology within the editor.
+%       % - Evaluate the functionality and performance of the complete system.
+%   \subsection{Methodology}
+%       % - **Development Approach:** (e.g., Agile, Iterative).
+%       % - **Technologies Used:** Detail the key technologies: Java for NLP pipeline and ontology editor backend, Python/Flask for the API wrapper, Apache Jena for OWL manipulation, GWT for ontology editor frontend, Docker for containerization.
+%       % - **Evaluation Strategy:** How you plan to test and validate the system (e.g., specific test cases, performance metrics, comparison with expected outputs).
+
+\section{System Architecture}
+% **Content:**
+%   - Provide a high-level overview of the entire system.
+%   - Include a main architectural diagram showing the two primary components:
+%     1. The containerized web service for text analysis (backend).
+%     2. The ontology editor instance with the custom extension (frontend).
+%   - Illustrate the interaction flow: user inputs text in the ontology editor -> request to extension's backend -> request to text analysis service -> service processes text -> structured output returned -> output parsed and integrated into the ontology.
+%   - Discuss key design decisions for this architecture (e.g., microservice approach for the pipeline, choice of REST API for communication).
+
+The system presented in this thesis is designed as a cohesive framework that bridges the gap between unstructured clinical narratives and formal ontological representations. It comprises two primary, yet interconnected, components: a backend clinical text analysis service named onc2ont, and a frontend integration within WebProtégé, realized as the "WebProtégé CTakes Extension". This architecture facilitates the automated conversion of clinical text into structured OWL2 entities and their seamless incorporation into active ontology projects.
+
+\subsection{High-Level System Overview}
+The overall architecture promotes a decoupled design, where the intensive text processing tasks are handled by a specialized, containerized web service, while the user interaction and ontology integration are managed within the familiar WebProtégé environment. The onc2ont service acts as a powerful backend engine, performing Natural Language Processing (NLP) and semantic conversion. The WebProtégé CTakes Extension provides the user interface and the necessary "glue" logic to invoke the onc2ont service and integrate its results.
+
+% Suggestion: Place the simplified complete system overview diagram here.
+% This diagram should show the user interacting with WebProtégé, the extension making a call to the onc2ont service, and the data flow.
+% Example elements: User -> WebProtégé UI (CTakes Extension Portlet) -> WebProtégé Server (Extension Backend) --HTTP POST Request--> onc2ont Service (Docker Container) --OWL/TTL Response--> WebProtégé Server (Extension Backend) -> Ontology Update.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.9\textwidth]{MemoriaFinal/images/overall_system_simplified_v1.1.png} % Replace with your actual diagram file
+    % \fbox{\parbox[c][10cm][c]{0.9\textwidth}{\centering PLACEHOLDER FOR OVERALL SYSTEM DIAGRAM HERE \\ \textit{Illustrating interaction between WebProtégé with CTakes Extension and the onc2ont service.}}}
+    \caption{High-Level System Architecture Overview.}
+    \label{fig:overall_system_architecture}
+\end{figure}
+
+
+
+The typical interaction flow through the system is as follows:
+\begin{enumerate}
+    \item \textbf{User Input:} The user navigates to the "Clinical Text Converter" perspective within WebProtégé and inputs clinical text into the "onc2ont Portlet".
+    \item \textbf{Client-Side Request:} The `Onc2OntPortletPresenter` (GWT client-side component) captures the text and initiates a request to the WebProtégé server-side backend.
+    \item \textbf{Server-Side Handling (WebProtégé):} The `ProcessClinicalNotesActionHandler` on the WebProtégé server receives this request. It is responsible for communicating with the external onc2ont service.
+    \item \textbf{External Service Invocation:} The `ProcessClinicalNotesActionHandler` constructs an HTTP POST request containing the clinical text and sends it to the `/process` endpoint of the onc2ont service.
+    \item \textbf{Text Analysis and Semantic Conversion (onc2ont):} The onc2ont service, running in a Docker container, processes the text using its cTAKES-based pipeline and `MyOwlCasConsumer` to generate OWL/TTL formatted semantic data.
+    \item \textbf{Response Reception:} The onc2ont service returns the generated OWL/TTL data in the HTTP response to the `ProcessClinicalNotesActionHandler`.
+    \item \textbf{Ontology Integration:} The `ProcessClinicalNotesActionHandler` parses the received TTL data using WebProtégé's OWL API with Rio Turtle format and utilizes WebProtégé's change management system to apply the new axioms and annotations to the user's currently active ontology project.
+    \item \textbf{User Feedback:} The WebProtégé interface updates to reflect the newly integrated entities and provides processing statistics to the user.
+\end{enumerate}
+
+\subsection{Component Architectures}
+
+\subsubsection{onc2ont: Clinical Text Analysis Service}
+The onc2ont service is a self-contained application responsible for the core NLP tasks and conversion of unstructured text to OWL/TTL. It encapsulates the Apache cTAKES pipeline, custom components like `MyExtendingFileTreeReader` and `MyOwlCasConsumer`, and exposes its functionality through an HTTP endpoint. The entire service is containerized using Docker for ease of deployment and scalability. Its architecture focuses on robust text processing and semantic output generation.
+
+% Suggestion: Place the simplified onc2ont diagram here.
+% This diagram should highlight the internal pipeline of the onc2ont service.
+% Example elements: HTTP POST Request (Clinical Text) -> HTTP Endpoint (/process) -> Java Pipeline (`PlaintextToTtl` with cTAKES AEs & `MyOwlCasConsumer`) -> OWL/TTL Output -> HTTP Response.
+\begin{figure}[hh]
+    \centering
+    % \includegraphics[width=0.7\textwidth]{images/onc2ont_architecture_diagram.png} % Replace with your actual diagram file
+    \fbox{\parbox[c][8cm][c]{0.7\textwidth}{\centering PLACEHOLDER FOR SIMPLIFIED onc2ont SERVICE DIAGRAM HERE \\ \textit{Illustrating the internal workflow of the onc2ont text processing pipeline.}}}
+    \caption{onc2ont Service Architecture.}
+    \label{fig:onc2ont_architecture}
+\end{figure}
+
+\subsubsection{WebProtégé CTakes Extension}
+The WebProtégé CTakes Extension integrates the clinical text processing capabilities directly into the ontology development environment. It follows WebProtégé's client-server architecture:
+\begin{itemize}
+    \item \textbf{Client-Side (GWT):} Consists of UI components (`Onc2OntView`/`Onc2OntViewImpl`) and presentation logic (`Onc2OntPortletPresenter`). It provides the "Clinical Text Converter" perspective and the "onc2ont Portlet" for user interaction.
+    \item \textbf{Server-Side (Java/Spring):} Includes `ProcessClinicalNotesActionHandler`, which manages communication with the onc2ont service via HTTP and integrates the returned semantic data into the active ontology using WebProtégé's core functionalities like the change management system.
+\end{itemize}
+This extension leverages WebProtégé's existing frameworks for portlet creation, perspective management, and server-side action handling.
+
+% Simplified WebProtégé CTakes Extension diagram - see webprotege_ctakes_simplified.mermaid
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/webprotege_ctakes_simplified.png} % Generated from webprotege_ctakes_simplified.mermaid
+    \caption{WebProtégé CTakes Extension Architecture - Simplified View showing client-server interaction and external service integration.}
+    \label{fig:webprotege_extension_architecture}
+\end{figure}
+
+\subsection{Key Design Decisions}
+Several key design decisions underpin this architecture:
+\begin{itemize}
+    \item \textbf{Microservice Approach for onc2ont:} The text analysis pipeline is developed as an independent service. This promotes modularity, allowing the onc2ont service to be developed, deployed, and scaled independently of WebProtégé. It also allows other applications to potentially consume this service.
+    \item \textbf{REST API for Inter-Service Communication:} Communication between the WebProtégé extension's backend and the onc2ont service is achieved via a RESTful HTTP API. This is a standard, language-agnostic, and stateless communication protocol, simplifying integration and ensuring interoperability.
+    \item \textbf{Containerization of onc2ont:} Using Docker for the onc2ont service simplifies deployment, manages dependencies, and ensures a consistent runtime environment across different setups.
+    \item \textbf{Leveraging WebProtégé's Extensibility:} The frontend is built as an extension to WebProtégé, utilizing its established mechanisms for UI components (portlets, perspectives) and server-side logic (actions, change management). This reduces boilerplate development and ensures tight integration with the ontology editing environment.
+    \item \textbf{Decoupled Processing and Integration:} The tasks of heavy NLP processing (onc2ont) and ontology integration (WebProtégé extension) are clearly separated. This separation of concerns improves maintainability and allows for specialized optimization of each component.
+\end{itemize}
+This architectural design aims to provide a robust, scalable, and user-friendly system for integrating advanced clinical text analysis capabilities into a collaborative ontology engineering platform.
+
+\section{Automated Clinical Text Analysis and Semantic Conversion}
+% **Content:** This section details the design and implementation of the text processing and semantic conversion service.
+    \subsection{Core Natural Language Processing Configuration}
+        % - Describe the main orchestrator class (e.g., `PlaintextToTtl`).
+        % - Detail the sequence of NLP Analysis Engines used (e.g., from cTAKES: `MyExtendingFileTreeReader`, sectionizer, segmenter, tokenizer, POS tagger, chunker, dependency parser, UMLS dictionary lookup).
+        % - Explain any customizations or specific configurations made to these components for your use case.
+    \subsection{Advanced Semantic Analysis: Assertions and Relations}
+        % - Explain the implementation and importance of assertion analysis (polarity, uncertainty, history, conditional, generic, subject).
+        % - Describe the relation extraction components (locationOf, degreeOf, general modifiers) and how they enhance the semantic richness of the output.
+    \subsection{Semantic Conversion to Ontological Format}
+        % - Detail the design of your target ontology model (base URI, namespaces, class hierarchy: e.g., `IdentifiedAnnotation`, `DiseaseDisorderMention`).
+        % - Explain the mapping from NLP annotations to ontology classes and properties (data properties: e.g., `hasCoveredText`, `hasCUI`, `isNegated`; object properties: e.g., `occursInDocument`, `locationOf`).
+        % - Discuss the use of libraries (e.g., Apache Jena) for creating and serializing the ontology model (e.g., to TTL).
+        % - Explain the URI generation scheme for instances. Refers to `MyOwlCasConsumer` logic.
+    \subsection{Service Deployment and Containerization}
+        % - Describe the REST API (endpoint e.g., `/process`, request/response format) wrapping the Java pipeline (e.g., using Flask).
+        % - Explain the rationale for using a specific language (e.g., Python) as a wrapper if applicable.
+        % - Detail the containerization setup (e.g., Docker): base image (OpenJDK), build process (Maven), API key management (UMLS), port exposure. Explain the benefits of containerization.
+
+\section{Interactive Ontology Integration Framework}
+% **Content:** This section details the design and implementation of the ontology editor extension.
+    \subsection{User Interface for Clinical Text Conversion}
+        % - Describe the new perspective or UI module designed for clinical text analysis within the ontology editor (e.g., "Clinical Text Converter" perspective in WebProtégé).
+        % - Explain the layout and components: e.g., Individual Lists, Individual Editor, and the central text processing Portlet.
+        % - Discuss the UI/UX considerations for this perspective.
+        % - Refer to configuration files if applicable (e.g., `Clinical Text Converter.json`, `perspective.list.json`).
+    \subsection{Text Processing Portlet: Design and Implementation}
+        % - **Client-Side (e.g., GWT for WebProtégé):**
+        %   - Detail the Presenter class (e.g., `onc2ontPortletPresenter`): its responsibilities in handling UI logic, user input (text area), triggering processing, and displaying status/results.
+        %   - Describe the View interface and implementation (e.g., `onc2ontView`, `onc2ontViewImpl`): the UI elements and their interaction.
+        % - **Server-Side (e.g., Java/Spring in WebProtégé's backend):**
+        %   - Explain the Action Handler class (e.g., `ProcessClinicalNotesActionHandler`): how it receives requests from the client.
+        %   - Describe its role in making HTTP calls to the external text analysis service.
+        %   - Detail the Action/Result pattern for RPC if used (e.g., `ProcessClinicalNotesAction` / `ProcessClinicalNotesResult`).
+    \subsection{Integration of Semantic Output into Ontology Editor}
+        % - Explain the process once the structured output (e.g., TTL) is received by the server-side Action Handler.
+        % - How the output string is parsed (e.g., using Jena within the ontology editor's backend).
+        % - How the extracted axioms and annotations are applied to the currently active ontology project using the editor's change management system.
+        % - Discuss any challenges in merging external ontological data into an active ontology session.
+
+\section{Testing, Results, and Evaluation}
+% **Content:**
+    \subsection{Testing Methodology and Environment}
+        % - Describe the setup for testing: versions of software, hardware used.
+        % - Detail the types of clinical notes used for testing (e.g., sample notes, de-identified real notes if applicable, notes designed to test specific features like negation, relations).
+    \subsection{Functional Testing and Use Case Scenarios}
+        % - Present a few key use cases. For each:
+        %   1. Show the input clinical text.
+        %   2. Display snippets of the generated ontological output, highlighting important entities, assertions, and relations.
+        %   3. Include screenshots from the ontology editor extension showing the text input, the processing, and the resulting individuals and their properties in the ontology.
+        % - Discuss how the system handles different linguistic phenomena (negation, uncertainty, etc.).
+    \subsection{Performance Evaluation}
+        % - Present quantitative results based on the performance characteristics mentioned in project documentation (e.g., onc2ont README):
+        %   - **Throughput:** Time taken to process notes of varying lengths.
+        %   - **Memory Usage:** RAM consumption of the containerized service.
+        %   - **API Response Time:** Latency of the service endpoint.
+        % - Discuss the scalability of the solution.
+    \subsection{Qualitative Evaluation}
+        % - Discuss the correctness and completeness of the generated ontological output against manually annotated examples or expert opinion (if feasible).
+        % - Evaluate the usability of the ontology editor extension.
+
+\section{Conclusions and Future Work}
+% **Content:**
+    \subsection{Summary of Contributions}
+        % - Reiterate the main achievements of the thesis, linking them back to the initial objectives.
+        % - Emphasize the novelty of your integrated solution.
+    \subsection{Limitations}
+        % - Discuss any known limitations of the current system (e.g., types of relations not yet handled, performance bottlenecks, limitations of underlying NLP models).
+    \subsection{Future Work}
+        % - Elaborate on the future enhancements mentioned in project documentation (e.g., READMEs):
+        %   - Extended relation types (causes, treats).
+        %   - Support for other output formats (JSON-LD, RDF/XML).
+        %   - Batch processing capabilities.
+        %   - Automated ontology validation tools.
+        %   - Performance optimizations (parallel processing, caching).
+        %   - Potential for supporting other languages.
+
+\newpage
+% Bibliography (IEEE or APA)
+% \bibliographystyle{IEEEtran} % Or apalike, etc.
+% \bibliography{IEEE.bib} % Ensure your .bib file is correctly named and populated.
+% **Content:** List all cited works. Use a consistent citation style.
+
+\newpage
+% Appendices (optional, but good for adding depth and reaching page count)
+\appendix
+\section{Appendix A: Key Source Code Snippets}
+% **Content:** Include well-commented snippets of crucial code sections.
+%   - Example: Core logic from main Java classes for NLP pipeline, semantic conversion, ontology editor extension presenter, and action handler, and the Python Flask API.
+%   - Do not include entire files, only the most illustrative parts.
+
+\section{Appendix B: Full Example of Generated Ontological Output}
+% **Content:** Provide the complete, unedited ontological output (e.g., TTL file) for one of the detailed use cases discussed in the "Results" section.
+
+\section{Appendix C: User and Deployment Guide}
+% **Content:** A summarized guide for setting up and running your system.
+%   - **Text Analysis Pipeline:** Building, Docker deployment, API key configuration.
+%   - **Ontology Editor Extension:** Building the editor with the extension, ensuring the analysis service is accessible.
+%   - Basic usage steps for the text conversion interface.
+
+\end{document}

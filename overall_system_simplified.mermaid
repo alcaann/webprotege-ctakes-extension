@@ -1,0 +1,68 @@
+---
+title: WebProtégé CTakes Extension - System Architecture Overview
+---
+graph TB
+    %% User Layer
+    User[👤 User] --> Browser[🌐 Web Browser]
+    
+    %% WebProtégé Frontend
+    Browser --> WebProtegeUI[📱 WebProtégé UI<br/>Clinical Text Converter]
+    
+    subgraph "WebProtégé CTakes Extension"
+        direction TB
+        
+        subgraph "Client-Side (GWT)"
+            WebProtegeUI --> Onc2OntPortlet[🔬 Onc2Ont Portlet<br/>Clinical Notes Input]
+            Onc2OntPortlet --> Onc2OntPresenter[Onc2OntPortletPresenter<br/>UI Logic & RPC]
+        end
+        
+        subgraph "Server-Side (Java)"
+            Onc2OntPresenter -->|Action/Result Pattern| ActionHandler[ProcessClinicalNotesActionHandler<br/>HTTP Client & TTL Parser]
+            ActionHandler --> ChangeManager[Change Manager<br/>Ontology Integration]
+        end
+        
+        subgraph "Data Storage"
+            ChangeManager --> MongoDB[(🗄️ MongoDB<br/>Project Data)]
+        end
+    end
+    
+    %% External onc2ont Service
+    subgraph "onc2ont Service (Docker)"
+        direction TB
+        ActionHandler -->|HTTP POST<br/>Clinical Text| HTTPEndpoint[🔗 /process Endpoint]
+        
+        HTTPEndpoint --> NLPPipeline[🧠 Apache cTAKES Pipeline<br/>+ Custom Components]
+        NLPPipeline --> SemanticConversion[MyOwlCasConsumer<br/>OWL/TTL Generation]
+        
+        SemanticConversion -->|TTL Response| HTTPEndpoint
+    end
+    
+    %% Response Flow
+    HTTPEndpoint -->|OWL/TTL Content| ActionHandler
+    MongoDB -->|Updated Ontology| WebProtegeUI
+    
+    %% External Dependencies
+    NLPPipeline -.->|Medical Concepts| UMLS[🏥 UMLS<br/>Terminology Services]
+    
+    %% Docker Context
+    subgraph "Docker Deployment"
+        direction LR
+        WebProtegeContainer[webprotege:8080]
+        Onc2OntContainer[onc2ont:5000]
+        MongoContainer[wpmongo:27017]
+    end
+    
+    %% Styling
+    classDef userLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef clientLayer fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef serverLayer fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef serviceLayer fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef dataLayer fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef dockerLayer fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px
+    
+    class User,Browser userLayer
+    class WebProtegeUI,Onc2OntPortlet,Onc2OntPresenter clientLayer
+    class ActionHandler,ChangeManager serverLayer
+    class HTTPEndpoint,NLPPipeline,SemanticConversion serviceLayer
+    class MongoDB dataLayer
+    class WebProtegeContainer,Onc2OntContainer,MongoContainer dockerLayer

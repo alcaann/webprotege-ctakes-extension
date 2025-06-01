@@ -1,0 +1,115 @@
+---
+title: WebProtégé CTakes Extension - Overall System Architecture
+---
+graph TB
+    %% User and Browser Layer
+    User[👤 User] --> Browser[🌐 Web Browser]
+    
+    %% WebProtégé Frontend (GWT)
+    Browser --> WebProtegeUI[📱 WebProtégé UI<br/>Clinical Text Converter Perspective]
+    
+    subgraph "Client-Side (GWT)"
+        WebProtegeUI --> ClinicalConverter[🏥 Clinical Text Converter Perspective]
+        ClinicalConverter --> IndividualLists[📋 Individual Lists Portlet]
+        ClinicalConverter --> IndividualEditor[✏️ Individual Editor Portlet]
+        ClinicalConverter --> Onc2OntPortlet[🔬 Onc2Ont Portlet<br/>Clinical Notes Converter]
+        
+        Onc2OntPortlet --> Onc2OntView[Onc2OntView/ViewImpl<br/>UI Components]
+        Onc2OntView --> Onc2OntPresenter[Onc2OntPortletPresenter<br/>GWT Logic]
+    end
+    
+    %% WebProtégé Server Infrastructure
+    subgraph "WebProtégé Server Infrastructure"
+        subgraph "Server-Side (Java/Spring)"
+            Onc2OntPresenter -->|RPC/Action-Result Pattern| ActionHandler[ProcessClinicalNotesActionHandler<br/>Server-side Processing]
+            ActionHandler --> ChangeManager[WebProtégé Change Manager<br/>Ontology Updates]
+            ActionHandler --> OWLManager[WebProtégé OWL Manager<br/>TTL Parsing with Rio Turtle]
+        end
+        
+        subgraph "Data Storage"
+            ChangeManager --> MongoDB[(🗄️ MongoDB<br/>WebProtégé Data)]
+            MongoDB --> ProjectData[Project Data<br/>Ontologies & Revisions]
+            MongoDB --> UserData[User Data<br/>Permissions & Settings]
+        end
+    end
+    
+    %% External onc2ont Service
+    subgraph "onc2ont Service Container"
+        ActionHandler -->|HTTP POST<br/>Clinical Text| Onc2OntAPI[🔗 HTTP API Endpoint<br/>/process]
+        
+        subgraph "Clinical Text Processing Pipeline"
+            Onc2OntAPI --> FileProcessor[MyExtendingFileTreeReader<br/>Document Processing]
+            FileProcessor --> CTAKESPipeline[🧠 Apache cTAKES Pipeline]
+            
+            subgraph "NLP Analysis Chain"
+                CTAKESPipeline --> Tokenizer[Tokenization & Segmentation]
+                Tokenizer --> POSTagger[POS Tagging]
+                POSTagger --> ChunkParser[Syntactic Chunking]
+                ChunkParser --> DependencyParser[Dependency Parsing]
+                DependencyParser --> UMLSLookup[UMLS Dictionary Lookup]
+            end
+            
+            subgraph "Medical Analysis"
+                UMLSLookup --> AssertionEngine[Assertion Analysis<br/>Polarity, Uncertainty, History]
+                AssertionEngine --> RelationExtractor[Relation Extraction<br/>Location-of, Degree-of]
+            end
+            
+            RelationExtractor --> OWLConsumer[MyOwlCasConsumer<br/>Semantic Conversion]
+        end
+        
+        subgraph "Ontology Generation"
+            OWLConsumer --> OWLModel[🏗️ OWL Model Creation<br/>Apache Jena]
+            OWLModel --> ClassHierarchy[Class Hierarchy<br/>IdentifiedAnnotation subtypes]
+            OWLModel --> PropertyDefinitions[Property Definitions<br/>Data & Object Properties]
+            OWLModel --> IndividualGeneration[Individual Generation<br/>Unique URI schemes]
+            
+            ClassHierarchy --> TTLSerializer[TTL Serializer<br/>Protégé-compatible output]
+            PropertyDefinitions --> TTLSerializer
+            IndividualGeneration --> TTLSerializer
+        end
+        
+        TTLSerializer -->|OWL/TTL Response| Onc2OntAPI
+    end
+    
+    %% Response Flow
+    Onc2OntAPI -->|TTL Content| ActionHandler
+    OWLManager --> ChangeManager
+    ChangeManager -->|Ontology Updates| Onc2OntPresenter
+    Onc2OntPresenter -->|Processing Results| Onc2OntView
+    Onc2OntView -->|Status & Statistics| WebProtegeUI
+    
+    %% External Dependencies
+    subgraph "External Services"
+        UMLSLookup -.->|API Calls| UMLS[🏥 UMLS Terminology Services<br/>Medical Concept Lookup]
+    end
+    
+    %% Docker Deployment Context
+    subgraph "Docker Environment"
+        direction TB
+        DockerHost[🐳 Docker Host]
+        WebProtegeContainer[webprotege container<br/>Port 8080]
+        Onc2OntContainer[onc2ont container<br/>Port 5000]
+        MongoContainer[wpmongo container<br/>MongoDB 4.1]
+        
+        DockerHost --> WebProtegeContainer
+        DockerHost --> Onc2OntContainer
+        DockerHost --> MongoContainer
+    end
+    
+    %% Styling
+    classDef userLayer fill:#e1f5fe,stroke:#01579b,stroke-width:2px
+    classDef clientLayer fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef serverLayer fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef serviceLayer fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef nlpLayer fill:#fce4ec,stroke:#880e4f,stroke-width:2px
+    classDef dataLayer fill:#f1f8e9,stroke:#33691e,stroke-width:2px
+    classDef dockerLayer fill:#e3f2fd,stroke:#0d47a1,stroke-width:2px
+    
+    class User,Browser userLayer
+    class WebProtegeUI,ClinicalConverter,IndividualLists,IndividualEditor,Onc2OntPortlet,Onc2OntView,Onc2OntPresenter clientLayer
+    class ActionHandler,ChangeManager,OWLManager serverLayer
+    class Onc2OntAPI,FileProcessor serviceLayer
+    class CTAKESPipeline,Tokenizer,POSTagger,ChunkParser,DependencyParser,UMLSLookup,AssertionEngine,RelationExtractor nlpLayer
+    class OWLConsumer,OWLModel,ClassHierarchy,PropertyDefinitions,IndividualGeneration,TTLSerializer nlpLayer
+    class MongoDB,ProjectData,UserData dataLayer
+    class DockerHost,WebProtegeContainer,Onc2OntContainer,MongoContainer dockerLayer

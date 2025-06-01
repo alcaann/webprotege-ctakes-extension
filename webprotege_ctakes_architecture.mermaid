@@ -1,0 +1,135 @@
+graph TB
+    %% WebProtégé cTAKES Extension Architecture
+    %% This diagram shows the WebProtégé architecture with cTAKES integration
+
+    %% Client Layer (GWT-based)
+    subgraph "Client Layer (GWT)"
+        UI[Clinical Notes Converter UI<br/>Onc2OntViewImpl]
+        Presenter[Onc2Ont Portlet Presenter<br/>Onc2OntPortletPresenter]
+        DispatchMgr[Dispatch Service Manager<br/>DispatchServiceManager]
+        
+        UI --> Presenter
+        Presenter --> DispatchMgr
+    end
+
+    %% Client-Server Communication
+    subgraph "Client-Server Communication"
+        Action[ProcessClinicalNotesAction<br/>Contains: ProjectId + ClinicalNotes]
+        Result[ProcessClinicalNotesResult<br/>Contains: Processing Stats + Status]
+        RPC[RPC WhiteList<br/>GWT Serialization]
+        
+        DispatchMgr --> Action
+        Action --> RPC
+        RPC --> Result
+        Result --> DispatchMgr
+    end
+
+    %% Server Dispatch System
+    subgraph "Server Dispatch System"
+        Registry[Action Handler Registry<br/>ActionHandlerRegistryImpl]
+        ActionHandler[ProcessClinicalNotesActionHandler<br/>extends AbstractProjectActionHandler]
+        Validator[Request Validator<br/>Access Control]
+        
+        Registry --> ActionHandler
+        ActionHandler --> Validator
+    end
+
+    %% Core Processing Components
+    subgraph "Core Processing Engine"
+        AccessMgr[Access Manager<br/>Security & Permissions]
+        ChangeMgr[Change Manager<br/>Ontology Modifications]
+        OntologyMgr[Default Ontology ID Manager<br/>Target Ontology]
+        
+        ActionHandler --> AccessMgr
+        ActionHandler --> ChangeMgr
+        ActionHandler --> OntologyMgr
+    end
+
+    %% External Service Integration
+    subgraph "External Service Integration"
+        HTTPClient[HTTP Client<br/>Java HttpURLConnection]
+        ServiceAPI[onc2ont Service API<br/>Clinical Notes → TTL]
+        
+        ActionHandler --> HTTPClient
+        HTTPClient --> ServiceAPI
+        ServiceAPI --> HTTPClient
+    end
+
+    %% OWL Processing Pipeline
+    subgraph "OWL Processing Pipeline"
+        Parser[OWL API Parser<br/>Turtle Content Processing]
+        Axioms[OWL Axioms<br/>Generated from cTAKES]
+        Annotations[Ontology Annotations<br/>Metadata & Properties]
+        Changes[Change List Generator<br/>AddAxiomChange + AddOntologyAnnotationChange]
+        
+        HTTPClient --> Parser
+        Parser --> Axioms
+        Parser --> Annotations
+        Axioms --> Changes
+        Annotations --> Changes
+        Changes --> ChangeMgr
+    end
+
+    %% Ontology Storage
+    subgraph "Ontology Storage & Management"
+        ProjectOnt[Project Ontology<br/>OWL Knowledge Base]
+        ChangeLog[Change History<br/>Revision Control]
+        EventSystem[Event System<br/>Change Notifications]
+        
+        ChangeMgr --> ProjectOnt
+        ChangeMgr --> ChangeLog
+        ChangeMgr --> EventSystem
+    end
+
+    %% Configuration & Injection
+    subgraph "Dependency Injection (Dagger)"
+        ClientModule[Onc2Ont Client Module<br/>@PortletModule]
+        ServerModule[Onc2Ont Server Module<br/>Action Handler Registration]
+        ProjectHandlers[Project Action Handlers Module<br/>Handler Registration]
+        
+        ClientModule --> Presenter
+        ServerModule --> ActionHandler
+        ProjectHandlers --> Registry
+    end
+
+    %% User Experience Flow
+    User[User<br/>Clinical Researcher] --> UI
+    UI --> |Clinical Notes Text| Presenter
+    Presenter --> |Creates Action| Action
+    
+    %% Processing Flow
+    Action --> |HTTP Request| Registry
+    Registry --> |Route to Handler| ActionHandler
+    ActionHandler --> |Send to Service| ServiceAPI
+    ServiceAPI --> |TTL Response| ActionHandler
+    ActionHandler --> |Parse & Apply| Changes
+    Changes --> |Update Ontology| ProjectOnt
+    
+    %% Response Flow
+    ProjectOnt --> |Success/Stats| Result
+    Result --> |HTTP Response| UI
+    UI --> |Display Results| User
+
+    %% External Dependencies
+    subgraph "External Dependencies"
+        cTAKES[Apache cTAKES<br/>Clinical Text Processing]
+        UMLS[UMLS Knowledge Base<br/>Medical Terminology]
+        OWLLib[OWL API Library<br/>Ontology Manipulation]
+        
+        ServiceAPI --> cTAKES
+        cTAKES --> UMLS
+        Parser --> OWLLib
+    end
+
+    %% Styling
+    classDef clientLayer fill:#e1f5fe
+    classDef serverLayer fill:#f3e5f5
+    classDef externalLayer fill:#fff3e0
+    classDef processingLayer fill:#e8f5e8
+    classDef storageLayer fill:#fce4ec
+
+    class UI,Presenter,DispatchMgr clientLayer
+    class Registry,ActionHandler,AccessMgr,ChangeMgr serverLayer
+    class ServiceAPI,cTAKES,UMLS externalLayer
+    class Parser,Axioms,Annotations,Changes processingLayer
+    class ProjectOnt,ChangeLog,EventSystem storageLayer

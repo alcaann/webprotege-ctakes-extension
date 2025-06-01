@@ -1,0 +1,66 @@
+---
+title: WebProtégé CTakes Extension - Data Flow Architecture
+---
+graph TB
+    %% User Interaction Layer
+    User[👤 User] -->|Enters clinical notes| WebUI[🌐 WebProtégé Web Interface]
+    
+    %% Client-Side MVP Pattern
+    subgraph "Client-Side (GWT)"
+        WebUI -->|Loads portlet| Portlet[🔬 Onc2Ont Portlet]
+        
+        %% MVP Pattern Implementation
+        Portlet -->|Creates & injects view| View[Onc2OntView<br/>UI Components & Display]
+        View <-->|User events/<br/>Status updates| Presenter[Onc2OntPortletPresenter<br/>Business Logic & Events]
+        
+        %% View Components
+        subgraph "View Layer"
+            View -->|Displays| TextArea[Clinical Text Input]
+            View -->|Displays| ProcessBtn[Process Button]
+            View -->|Updates| StatusPanel[Status & Results Display]
+        end
+        
+        %% Presenter handles all server communication
+        Presenter -->|ProcessClinicalNotesAction<br/>ProjectId + clinical text| RPC[RPC Layer]
+    end
+    
+    %% Server-Side Processing
+    subgraph "WebProtégé Server"
+        RPC -->|Deserializes action<br/>with clinical notes| ActionHandler[ProcessClinicalNotesActionHandler]
+        
+        %% External Service Integration
+        ActionHandler -->|HTTP POST<br/>Raw clinical text<br/>text/plain UTF-8| ExternalService[onc2ont Service<br/>Port 5000/process]
+        ExternalService -->|TTL/Turtle response<br/>OWL axioms & annotations| ActionHandler
+        
+        %% Ontology Integration
+        ActionHandler -->|TTL content<br/>string format| Parser[TTL Parser<br/>Rio Turtle]
+        Parser -->|Set&lt;OWLAxiom&gt;<br/>Set&lt;OWLAnnotation&gt;| ChangeManager[Change Manager<br/>Ontology Updates]
+        ChangeManager -->|AddAxiomChange<br/>AddOntologyAnnotationChange| Ontology[Project Ontology]
+    end
+    
+    %% Response Flow
+    Ontology -->|Applied changes<br/>confirmation| ChangeManager
+    ChangeManager -->|Change result<br/>success/failure| ActionHandler
+    ActionHandler -->|ProcessClinicalNotesResult<br/>stats + success/error| RPC
+    RPC -->|Serializes result| Presenter
+    Presenter -->|Status message +<br/>processing statistics| View
+    View -->|Updated UI<br/>with results| WebUI
+    
+    %% Configuration
+    subgraph "Extension Configuration"
+        Config[perspective.list.json<br/>Clinical Text Converter.json]
+        Config -.->|Portlet registration<br/>& UI configuration| Portlet
+    end
+    
+    %% Styling
+    classDef userLayer fill:#f3e5f5,stroke:#4a148c,stroke-width:2px
+    classDef clientLayer fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px
+    classDef serverLayer fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    classDef externalLayer fill:#ffebee,stroke:#c62828,stroke-width:2px
+    classDef configLayer fill:#e3f2fd,stroke:#0d47a1,stroke-width:1px,stroke-dasharray: 5 5
+    
+    class User,WebUI userLayer
+    class Portlet,View,Presenter,TextArea,ProcessBtn,StatusPanel,RPC clientLayer
+    class ActionHandler,Parser,ChangeManager,Ontology serverLayer
+    class ExternalService externalLayer
+    class Config configLayer
