@@ -26,7 +26,7 @@ cd /webprotege
 
 # Step 0: Build WebProtege
 echo "=== Building WebProtege ==="
-mvn package -P dev -Dmaven.test.skip=true -DskipTests=true -Dgwt.draftCompile=true -Dgwt.localWorkers=8
+#mvn package -P dev -Dmaven.test.skip=true -DskipTests=true -Dgwt.draftCompile=true -Dgwt.localWorkers=8
 #mvn -T 1C install -P dev -Dmaven.test.skip=true -DskipTests=true -pl webprotege-client -am
 
 
@@ -97,17 +97,9 @@ else
     fi
 fi
 
-# Step 7: Start Tomcat
-echo "=== Starting Tomcat ==="
-if [ -f $TOMCAT_HOME/bin/catalina.sh ]; then
-    echo "Starting Tomcat with catalina.sh"
-    $TOMCAT_HOME/bin/catalina.sh run
-else
-    echo "ERROR: Tomcat catalina.sh not found at $TOMCAT_HOME/bin/catalina.sh"
-    echo "Please check your Tomcat installation"
-    exit 1
-fi
-
-# This section won't execute until Tomcat is stopped
-echo "WebProtege has been installed and started!"
-echo "Access it at http://localhost:8080"
+echo "=== Installation Complete ==="
+echo "WebProtege has been installed successfully!"
+echo "Next steps:"
+echo "1. Run admin setup: ./admin-account-setup.sh"
+echo "2. Start Tomcat: ./start-tomcat.sh"
+echo "3. Access WebProtege at http://localhost:8080"
