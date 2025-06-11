@@ -28,8 +28,8 @@ cleanup() {
 trap cleanup EXIT
 
 # Generate sorted list of files (excluding specified directories and empty directories) for each directory
-find "$DIR1" -type f ! -path "*/.git/*" ! -path "*/.protegedata/*" | sed "s|^$DIR1/||" | sort > "$TMP1"
-find "$DIR2" -type f ! -path "*/.git/*" ! -path "*/.protegedata/*" | sed "s|^$DIR2/||" | sort > "$TMP2"
+find "$DIR1" -type f ! -path "*/.git/*" ! -path "*/.protegedata/*" ! -path "*/target/*" | sed "s|^$DIR1/||" | sort > "$TMP1"
+find "$DIR2" -type f ! -path "*/.git/*" ! -path "*/.protegedata/*" ! -path "*/target/*" | sed "s|^$DIR2/||" | sort > "$TMP2"
 
 # Compare the file lists to find common files
 comm -12 "$TMP1" "$TMP2" | while read -r file; do

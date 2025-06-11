@@ -1,0 +1,64 @@
+%this is a subsection of the main document (where system architecture section gives an overview of how the app works, see system_architecture.tex), whose titles you may use as a guide for your own document:
+
+\section{Interactive Ontology Integration Framework}
+
+\paragraph{\textcolor{red}{TODO: Detail This Section}}
+\begin{itemize}
+    \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Provide an overarching introduction to the WebProtégé extension, its purpose, and how it complements the backend onc2ont service.}
+    \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Briefly describe the user's journey when using this framework.}
+    \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Include a high-level diagram of the extension's components and its interaction with the WebProtégé server and the external onc2ont service, if not already covered in System Architecture.}
+    \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Revise this introductory part for clarity and completeness once subsections are drafted.}
+\end{itemize}
+
+    \subsection{User Interface for Clinical Text Conversion}
+    \paragraph{\textcolor{red}{TODO: Detail This Subsection}}
+    \begin{itemize}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Describe the new perspective or UI module designed (e.g., "Clinical Text Converter" perspective in WebProtégé).}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Explain the layout and its constituent components (e.g., Individual Lists, Individual Editor, and the central text processing Portlet). Provide screenshots if possible.}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Discuss the UI/UX considerations that guided the design of this perspective and portlet.}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Reference relevant WebProtégé configuration files if applicable (e.g., \texttt{Clinical Text Converter.json}, \texttt{perspective.list.json}), explaining their role.}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Revise this subsection for accuracy and completeness once drafted.}
+    \end{itemize}
+    % User will add implementation and example here
+
+    \subsection{Text Processing Portlet: Design and Implementation}
+    \paragraph{\textcolor{red}{TODO: Detail This Subsection}}
+    \begin{itemize}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Explain the overall client-server architecture of the portlet within WebProtégé.}
+    \end{itemize}
+
+        \paragraph{Client-Side (e.g., GWT for WebProtégé)}
+        \paragraph{\textcolor{red}{TODO: Detail Client-Side Implementation}}
+        \begin{itemize}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Detail the Presenter class (e.g., \texttt{onc2ontPortletPresenter}): its responsibilities in handling UI logic, capturing user input from the text area, triggering the processing request, and displaying status/results/statistics.}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Describe the View interface (e.g., \texttt{onc2ontView}) and its implementation (e.g., \texttt{onc2ontViewImpl}): detail the UI elements (text area, buttons, result display area) and how they interact with the Presenter.}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Explain how the client-side communicates with the WebProtégé server-side (e.g., GWT RPC, DispatchService).}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Include key code snippets or references to them in Appendix A.}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Revise this part for accuracy and completeness once drafted.}
+        \end{itemize}
+        % User will add implementation and example here
+
+        \paragraph{Server-Side (e.g., Java/Spring in WebProtégé's backend)}
+        \paragraph{\textcolor{red}{TODO: Detail Server-Side Implementation}}
+        \begin{itemize}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Explain the Action Handler class (e.g., \texttt{ProcessClinicalNotesActionHandler}): how it receives requests from the client-side Presenter.}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Describe its role in constructing and making HTTP POST calls to the external onc2ont text analysis service, including how it handles the request payload (clinical text) and response (TTL data).}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Detail the Action/Result pattern if used (e.g., \texttt{ProcessClinicalNotesAction} / \texttt{ProcessClinicalNotesResult}), explaining their structure and purpose.}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Discuss error handling mechanisms (e.g., if the onc2ont service is unavailable or returns an error).}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Include key code snippets or references to them in Appendix A.}
+            \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Revise this part for accuracy and completeness once drafted.}
+        \end{itemize}
+        % User will add implementation and example here
+
+    \subsection{Integration of Semantic Output into Ontology Editor}
+    \paragraph{\textcolor{red}{TODO: Detail This Subsection}}
+    \begin{itemize}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Explain the process that occurs once the structured output (e.g., TTL string) is successfully received by the server-side Action Handler from the onc2ont service.}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Describe how this TTL output string is parsed into an OWL model within the WebProtégé server's backend (e.g., using Apache Jena or WebProtégé's OWL API with Rio parsers).}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Detail how the extracted axioms (class assertions, property assertions) and annotations are applied to the currently active ontology project using WebProtégé's change management system (e.g., \texttt{OWLOntologyChangeList}, \texttt{ProjectOntologyManager}).}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Discuss any challenges encountered and solutions implemented for merging external ontological data into an active ontology session (e.g., handling existing entities, namespace management, ensuring consistency).}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Include key code snippets or references to them in Appendix A.}
+        \item[\textcolor{red}{$\bullet$}] \textcolor{red}{Revise this subsection for accuracy and completeness once drafted.}
+    \end{itemize}
+    % User will add implementation and example here
+
