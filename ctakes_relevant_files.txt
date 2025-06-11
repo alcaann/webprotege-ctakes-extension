@@ -1,0 +1,27 @@
+# Files relevant to cTAKES extension implementation
+
+## Modified Core Files (Files that differ between versions):
+Files differ: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/rpc/RpcWhiteList.java
+Files differ: webprotege-client/src/main/module-dev.gwt.xml
+Files differ: webprotege-client/src/main/module.gwt.xml
+Files differ: webprotege-server-core/src/main/java/edu/stanford/bmir/protege/web/server/inject/ProjectActionHandlersModule.java
+Files differ: webprotege-server-core/src/main/java/edu/stanford/bmir/protege/web/server/inject/ProjectComponent.java
+Files differ: webprotege-server-core/src/main/java/edu/stanford/bmir/protege/web/server/perspective/PerspectiveDataCopier.java
+Files differ: webprotege-server-core/src/main/resources/default-perspective-data/perspective.list.json
+Files differ: webprotege-server-core/src/main/resources/webprotege.properties
+
+## New cTAKES-specific Files (Only in extension):
+Only in ./../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/onc2ont/Onc2OntClientModule.java
+Only in ./../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/onc2ont/Onc2OntPortletPresenter.java
+Only in ./../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/onc2ont/Onc2OntViewImpl.java
+Only in ./../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/onc2ont/Onc2OntViewImpl.ui.xml
+Only in ./../webprotege-ctakes-extension: webprotege-client/src/main/java/edu/stanford/bmir/protege/web/client/onc2ont/Onc2OntView.java
+Only in ./../webprotege-ctakes-extension: webprotege-server-core/src/main/java/edu/stanford/bmir/protege/web/server/onc2ont/ProcessClinicalNotesActionHandler.java
+Only in ./../webprotege-ctakes-extension: webprotege-server-core/src/main/resources/default-perspective-data/Clinical Text Converter.json
+Only in ./../webprotege-ctakes-extension: webprotege-shared/src/main/java/edu/stanford/bmir/protege/web/shared/onc2ont/ProcessClinicalNotesAction.java
+Only in ./../webprotege-ctakes-extension: webprotege-shared/src/main/java/edu/stanford/bmir/protege/web/shared/onc2ont/ProcessClinicalNotesResult.java
+
+## Summary:
+- 8 modified core WebProtégé files to integrate cTAKES functionality
+- 9 new files implementing the cTAKES extension (onc2ont package)
+- Total: 17 files directly related to cTAKES implementation
